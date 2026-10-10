@@ -1,0 +1,34 @@
+name: Build and Deploy Angular to GitHub Pages
+
+on:
+  push:
+    branches:
+      - develop  # Triggers the workflow every time you push to the develop branch
+
+permissions:
+  contents: write  # Allows the action to write the build files to the gh-pages branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24  # Aligns with your local stable v24 setup
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npx ng build --configuration production
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/code-logix-ui/browser  # Points directly to your Angular 18 build output folder
+          branch: gh-pages  # The dedicated branch where your live website files live
